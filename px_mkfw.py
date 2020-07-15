@@ -51,18 +51,18 @@ import subprocess
 # Construct a basic firmware description
 #
 def mkdesc():
-	proto = {}
-	proto['magic']		= "PLAYUAVOSDFWv1"
-	proto['board_id']	= 90
-	proto['board_revision']	= 0
-	proto['version']	= ""
-	proto['summary']	= ""
-	proto['description']	= "Firmware for the PLAYUAVOSD board"
-	proto['git_identity']	= ""
-	proto['build_time']	= 0
-	proto['image']		= bytes()
-	proto['image_size']	= 0
-	return proto
+	return {
+	    'magic': "PLAYUAVOSDFWv1",
+	    'board_id': 90,
+	    'board_revision': 0,
+	    'version': "",
+	    'summary': "",
+	    'description': "Firmware for the PLAYUAVOSD board",
+	    'git_identity': "",
+	    'build_time': 0,
+	    'image': bytes(),
+	    'image_size': 0,
+	}
 
 # Parse commandline
 parser = argparse.ArgumentParser(description="Firmware generator for the PX autopilot system.")
@@ -77,13 +77,13 @@ parser.add_argument("--image",		action="store", help="the firmware image")
 args = parser.parse_args()
 
 # Fetch the firmware descriptor prototype if specified
-if args.prototype != None:
+if args.prototype is None:
+	desc = mkdesc()
+
+else:
 	f = open(args.prototype,"r")
 	desc = json.load(f)
 	f.close()
-else:
-	desc = mkdesc()
-
 desc['build_time'] 		= int(time.time())
 
 if args.board_id != None:
